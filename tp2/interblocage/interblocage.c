@@ -18,6 +18,7 @@
 
 volatile int x;
 volatile int y;
+volatile int prevX;
 
 pthread_mutex_t lock_one;
 pthread_mutex_t lock_two;
@@ -44,7 +45,7 @@ void *worker_foo(void *data)
 		pthread_mutex_lock(&lock_one);
 		pthread_mutex_lock(&lock_two);
         // TODO: forcer l'interblocage avec la barriere
-		pthread_barrier_wait(&barrier);
+		//pthread_barrier_wait(&barrier);
         x = ++y;
         printf("foo %d\n", x);
         // TODO: relacher lock_one et lock_two
@@ -62,7 +63,7 @@ void *worker_bar(void *data)
 		pthread_mutex_lock(&lock_two);
 		pthread_mutex_lock(&lock_one);
         // TODO: forcer l'interblocage avec la barriere
-		pthread_barrier_wait(&barrier);
+		//pthread_barrier_wait(&barrier);
         x = ++y;
         printf("bar %d\n", x);
         // TODO: relacher lock_two et lock_one
@@ -90,8 +91,13 @@ static void watchdog(int signr)
 {
     (void) signr;
     // TODO: Si un interblocage est detecte, alors faire appel a exit(0)
-    printf("watchdog\n");
-	exit(0);
+	if (x == prevX)
+	{
+		printf("watchdog\n");
+		exit(0);
+	}
+	else
+		prevX = x;
 }
 
 /*
