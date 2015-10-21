@@ -178,11 +178,11 @@ int main(int argc, char **argv) {
     // Attendre la fin du traitement de task_token()
     waitpid(children[0], NULL, 0);
 
-    // Fermeture du descripteur fd_word_len[WRITE]
-    close(fd_word_len[WRITE]);
-
     // Attendre la fin du traitement de task_frequency()
     waitpid(children[1], NULL, 0);
+
+    // Fermeture du descripteur fd_word_len[WRITE]
+    close(fd_word_len[WRITE]);
 
     printf("done %d %d\n", children[0], children[1]);
 
