@@ -96,7 +96,7 @@ free_vars(struct vars *vars) {
     free(vars->args);
     free(vars->prog);
     free(vars);
-}
+}S
 
 int
 main(int argc, char **argv) {
@@ -115,6 +115,13 @@ main(int argc, char **argv) {
          * puis exécuter la commande passée en argument (voir vars->prog et vars->args).
          * ATTENTION: bien s'assurer de traiter l'argument vars->dry_run
          */
+		if(!vars->dry_run){
+            personality( ADDR_NO_RANDOMIZE );
+            execvpe( vars->prog, vars->args, NULL );
+        }
+		else
+			execvpe( vars->prog, vars->args, NULL );
+
         break;
     default:
         wait(NULL);
