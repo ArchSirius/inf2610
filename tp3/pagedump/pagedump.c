@@ -17,6 +17,8 @@
 void save_page(char *fname, void *ptr) {
     (void) fname;
     (void) ptr;
+
+
     /*
      * TODO:
      * 1 - calculer l'adresse du début de la page
@@ -24,6 +26,19 @@ void save_page(char *fname, void *ptr) {
      * 3 - écrire la page dans le fichier
      * 4 - fermer le fichier
      */
+
+     // adresse sur 32 bits
+     // 12 derniers bits = offset
+    unsigned long addr = (unsigned long) ptr;
+    unsigned long mask = 0xFFFFFFFFFFFFF000;
+    unsigned long newPtr = (addr & mask);
+    //printf("%p --> ", ptr);
+    //printf("%p\n", newPtr);
+
+    int file = open(fname, O_WRONLY);
+    write(file, newPtr, 4096);
+    close(file);
+
     return;
 }
 
