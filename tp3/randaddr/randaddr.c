@@ -96,7 +96,7 @@ free_vars(struct vars *vars) {
     free(vars->args);
     free(vars->prog);
     free(vars);
-}S
+}
 
 int
 main(int argc, char **argv) {
