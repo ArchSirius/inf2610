@@ -61,6 +61,13 @@ static void *startHelper(void *arg)
 }
 #elif defined(Q_OS_WIN)
 // TODO
+static DWORD WINAPI startHelper(LPVOID arg)
+{
+    PipelineStage *stage = (PipelineStage *) arg;
+    qDebug() << "starting " << stage;
+    stage->execute();
+    return 0;
+}
 #endif
 
 void PipelineManager::launchParallel(int queueSize)
@@ -121,6 +128,17 @@ void PipelineManager::launchParallel(int queueSize)
      * Démarrer les threads Windows
      * Attention: utilisez seulement l'API Windows (pas l'API de Qt!)
      */
-    qDebug() << "TODO demarrer les threads";
+
+    HANDLE th[stageList.size()];
+    DWORD thId[stageList.size()];
+
+    for (int i = 0; i < stageList.size(); i++) {
+       th[i] = CreateThread(NULL, 0, startHelper, (LPVOID)stageList.at(i), 0, &thId[i]);
+    }
+
+    WaitForMultipleObjects(stageList.size(), th, true, INFINITE);
+    for (int i = 0; i < stageList.size(); i++) {
+        CloseHandle(th[i]);
+    }
 #endif
 }
