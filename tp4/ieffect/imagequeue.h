@@ -19,7 +19,8 @@ public:
 private:
     int m_capacity;
     QQueue<QImage*> m_queue;
-    HANDLE hSemaphore;
+    HANDLE pSemaphore;
+    HANDLE cSemaphore;
     HANDLE hMutex;
 };
 
